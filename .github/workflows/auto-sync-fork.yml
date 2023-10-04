@@ -21,7 +21,7 @@ jobs:
       run: git fetch upstream
 
     - name: Merge Upstream Changes
-      run: git merge upstream/release # Replace "main" with the branch you want to sync
+      run: git merge upstream/release --allow-unrelated-histories # Replace "main" with the branch you want to sync
 
     - name: Push Changes to Fork
       run: git push origin release # Replace "main" with the branch you want to sync
