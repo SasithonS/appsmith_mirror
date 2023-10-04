@@ -12,7 +12,12 @@ jobs:
     steps:
     - name: Checkout Repository
       uses: actions/checkout@v2
-
+      
+    - name: Configure Git User
+      run: |
+        git config user.name "${{ secrets.GIT_USER_NAME }}"
+        git config user.email "${{ secrets.GIT_USER_EMAIL }}"
+            
     - name: Set Upstream Remote
       run: git remote add upstream https://github.com/SasithonSS/appsmith_mirror.git
       # Replace "https://github.com/original/repo.git" with the URL of the upstream repository.
