@@ -10,23 +10,32 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Repository
-      uses: actions/checkout@v2
+    - name: Sync forked repo
+      run: gh repo sync SasithonS/appsmith_mirror -b release
+      env:
+        GITHUB_TOKEN: ${{ secrets.ST_WORKFLOW_PAT }}
+  # job:
+  # sync:
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #   - name: Checkout Repository
+  #     uses: actions/checkout@v2
       
-    - name: Configure Git User
-      run: |
-        git config user.name "${{ secrets.GIT_USER_NAME }}"
-        git config user.email "${{ secrets.GIT_USER_EMAIL }}"
+  #   - name: Configure Git User
+  #     run: |
+  #       git config user.name "${{ secrets.GIT_USER_NAME }}"
+  #       git config user.email "${{ secrets.GIT_USER_EMAIL }}"
             
-    - name: Set Upstream Remote
-      run: git remote add upstream https://github.com/SasithonSS/appsmith_mirror.git
-      # Replace "https://github.com/original/repo.git" with the URL of the upstream repository.
+  #   - name: Set Upstream Remote
+  #     run: git remote add upstream https://github.com/SasithonSS/appsmith_mirror.git
+  #     # Replace "https://github.com/original/repo.git" with the URL of the upstream repository.
 
-    - name: Fetch Upstream Changes
-      run: git fetch upstream
+  #   - name: Fetch Upstream Changes
+  #     run: git fetch upstream
 
-    - name: Merge Upstream Changes
-      run: git merge upstream/release --allow-unrelated-histories # Replace "main" with the branch you want to sync
+  #   - name: Merge Upstream Changes
+  #     run: git merge upstream/release --allow-unrelated-histories # Replace "main" with the branch you want to sync
 
-    - name: Push Changes to Fork
-      run: git push origin release # Replace "main" with the branch you want to sync
+  #   - name: Push Changes to Fork
+  #     run: git push origin release # Replace "main" with the branch you want to sync
