@@ -1,0 +1,39 @@
+name: Auto Sync Fork with Upstream
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 0 * * 5' # Schedule to run every Friday at midnight UTC
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Sync forked repo
+      run: gh repo sync SasithonS/appsmith_mirror -b release
+      env:
+        GITHUB_TOKEN: ${{ secrets.ST_WORKFLOW_PAT }}
+      
+    - name: Get Current UTC Time
+      if: ${{ success() }} # This step will only execute if the merge step success.
+      id: current_time
+      run: |
+        current_time=$(date -u +"%d-%m-%Y-%H%M%S")
+        current_date=$(date -u +"%d-%m-%Y")
+        echo "::set-output name=utc_time::$current_time"
+        echo "::set-output name=pr_date::$current_date"
+        
+    - name: Create Pull Request
+      if: ${{ success() }} # This step will only execute if the merge step success.
+      run: |
+        pr_title=" Pull Request from release to dev ${{ steps.current_time.outputs.utc_time }}"
+        pr_body="This pull request was automatically created at ${{ steps.current_time.outputs.pr_date }}"
+        curl -X POST -H "Authorization: token ${{ secrets.ST_WORKFLOW_PAT }}" \
+            -d '{
+              "title": "'"$pr_title"'",
+              "body": "'"$pr_body"'",
+              "head": "release",
+              "base": "dev"
+            }' \
+              "https://api.github.com/repos/${{ github.repository }}/pulls"
